@@ -68,16 +68,17 @@ int main(void)
   #include <iostream>
   #include <string>
 
+  using namespace std;
   // 標準出力に顧客情報を出力
   void show_client(int ID,		 // 出力する顧客のID
-		   std::string * name_list, // 名前・年齢・性別の各リストのポインタを渡す
+		   string * name_list, // 名前・年齢・性別の各リストのポインタを渡す
 		   int * age_list,		 // 
 		   bool * is_male_list)	 // 
   {
-    std::cout << "name:" << name_list[ID] << "\t"
-	      << "age:" << age_list[ID] << "\t"
-	      << "gender:" << ((is_male_list[ID]) ? "male" : "female")
-	      << std::endl;
+    cout << "name:" << name_list[ID] << "\t"
+	 << "age:" << age_list[ID] << "\t"
+	 << "gender:" << ((is_male_list[ID]) ? "male" : "female")
+	 << endl;
   }
 
   // メイン関数
