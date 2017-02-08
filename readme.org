@@ -1,2 +1,4 @@
 * アルゴリズムとデータ構造
 - [[file:array/array.org][配列]]
+- [[file:list/list.org][リスト]]
+  

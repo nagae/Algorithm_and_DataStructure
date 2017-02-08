@@ -11,14 +11,28 @@
 | Flank |   27 | male   |
 | Gina  |   42 | female |
 
-** ナイーブな方法
+** COMMENT ナイーブな方法
 以下のように人数分の名前・年齢・性別を格納するための変数を用意することもできるが, 
 顧客が増減するたびに膨大なソース・コードの修正が必要であり, とても現実的ではない.
 
+1. 標準入出力ライブラリ =iostream= を使い, 
+   #+BEGIN_SRC c
+     printf("%s %d\n", name, age);
+   #+END_SRC
+   などの代わりに
+   #+BEGIN_SRC c++
+     cout << name << age << endl;
+   #+END_SRC
+   とする.
+2. =using namespace= を使ってデフォルトの名前空間を =std= とする. そうしないと上記のコードが
+   以下のようにごちゃっとする.
+   #+BEGIN_SRC c++
+     std::cout << name << age << std::endl;
+   #+END_SRC
 #+BEGIN_SRC c++
-  #include <iostream>
-  #include <string>
-  using namespace std;		// 名前空間 std を利用
+  #include <iostream>		// 標準入出力
+  #include <string>		// 文字列
+  using namespace std;		// デフォルトの名前空間を std に設定
 
   // 標準出力に顧客情報を出力
   void show_client(string name, int age, bool is_male)
@@ -62,13 +76,14 @@
 ** 配列を使う
 こうした多くのデータを取り扱うには *配列* を用いるのが一般的. 
 以下では, 名前・年齢・性別のそれぞれを配列で格納している.
-関数 =show_client= にはこれらの配列の *ポインタ* (変数名に =*= をつけている)を
-渡していることに注意されたい.
+1. 配列のサイズは =const int= (整数定数)型 =mem_size= で与えている.
+2. ={}= を使うことで, 配列の宣言と同時に初期化を行なっている.
+3. 関数 =show_client= にはこれらの配列の *ポインタ* (変数名に =*= をつけている)を渡している.
 
 #+BEGIN_SRC c++
-  #include <iostream>
-  #include <string>
-  using namespace std;
+  #include <iostream>		// 標準入出力
+  #include <string>		// 文字列
+  using namespace std;		// デフォルトの名前空間を std に設定
 
   // 標準出力に顧客情報を出力
   void show_client(int ID,	    // 出力する顧客のID
@@ -108,15 +123,99 @@
   }
 #+END_SRC
 
+** ファイルから入力する
+データをソース・コードに直接記述するのではなく, 
+以下のように顧客データをスペースで区切った =data.txt= というファイルから読み込めるようにしたい.
+#+BEGIN_SRC txt
+Alice    23  female
+Bob      17  male  
+Cathy    32  female
+David    25  male  
+Ethan    48  male  
+Flank    27  male  
+Gina     42  female
+#+END_SRC
+
+1. ファイル入出力ライブラリ =fstream= を使い, 
+   #+BEGIN_SRC c
+     fp = fopen("data.txt");
+     fscanf(fp, "%s %d", &name, &age);
+   #+END_SRC
+   などの代わりに
+   #+BEGIN_SRC c++
+     ifstream iof("data.txt");
+     iof >> name >> age;
+   #+END_SRC
+   とする.
+2.
+#+BEGIN_SRC c++
+  #include <iostream>		// 標準入出力
+  #include <fstream>		// ファイル入出力
+  #include <string>		// 文字列
+  using namespace std;		// デフォルトの名前空間を std に設定
+
+  // 
+  // 標準出力に顧客情報を出力
+  // 
+  void show_client(int ID,		 // 出力する顧客のID
+		   string *name_list, // 名前・年齢・性別の各リストのポインタを渡す
+		   int *age_list,		 // 
+		   bool *is_male_list)	 // 
+  {
+    cout << "name:" << name_list[ID] << "\t"
+	      << "age:" << age_list[ID] << "\t"
+	      << "gender:" << ((is_male_list[ID]) ? "male" : "female")
+	      << endl;
+  }
+
+  // 
+  // メイン関数
+  // 
+  int main(void){
+    // 確保しておく顧客データのサイズ
+    const int mem_size = 10;
+    // 名前・年齢・性別を格納する配列を宣言
+    string name[mem_size];	// 名前
+    int age[mem_size];		// 年齢
+    bool is_male[mem_size];	// 性別
+
+    // 顧客情報の読み込み
+    ifstream ifs("data.txt");	// 入力ファイルストリームを開く
+    for (int ID = 0; ID < mem_size; ++ID){
+      string tmp_name, tmp_gender; // 一時的に名前を保管
+      int tmp_age;		 // 一時的に年齢を保管
+      if (ifs.eof()) break;      // ファイルの最後まで来たらループを脱出
+      // ストリーム入力演算子を用いてファイルから値を読込む
+      ifs >> tmp_name >> tmp_age >> tmp_gender;
+      // 配列の各要素に値を代入
+      name[ID] = tmp_name;
+      age[ID] = tmp_age;
+      is_male[ID] = (tmp_gender == "male");
+    }
+    ifs.close();			// ファイルを閉じる
+
+    // 顧客情報の表示
+    for (int ID = 0; ID < mem_size; ++ID){
+      // 顧客の名前が空白だった場合はループを脱出
+      if (name[ID] == "") break;
+      // 顧客情報を表示
+      show_client(ID, name, age, is_male);
+    }
+  }
+#+END_SRC
+
+
 ** 自作クラスの配列を使う
 上述の方法では, 各顧客についての情報が変化する(eg. 血液型を追加する)とソース・コード全体を変更しなければならない. 以下では, 各顧客の情報を =Client= という自作の *クラス* で保持している.
 以下は若干高度だが, 理解しておくと役に立つ.
 1. クラス・メンバ変数(=name, age, is_male=)を =public:= の後に宣言することで, *構造体* と同様に自由にアクセスできる.
-2. クラスを定義した後, *ストリーム出力演算子* =<<= を overload することで, クライアント情報を出力するのに =cout << client[ID] << endl= といった簡潔かつ自由度の高い実装が可能.
+2. クラスを定義した後, *ストリーム出力演算子* =<<= を overload することで, クライアント情報を出力するのに =cout << client[ID] << endl= といった簡潔かつ自由度の高い記述が可能.
+3. 同様に *ストリーム入力演算子* =>>= を overload することで, クライアント情報を読込むのに =ifs >> client[ID]= といった簡潔かつ自由度の高い記述が可能．
 
 #+BEGIN_SRC c++
-  #include <iostream>
-  #include <string>
+  #include <iostream>		// 標準入出力
+  #include <fstream>		// ファイル入出力
+  #include <string>		// 文字列
   using namespace std;		// 名前空間 std を利用
 
   // 
@@ -142,35 +241,35 @@
   }
 
   // 
+  // >>演算子 の overload による顧客データの読み取り
+  // 
+  istream& operator>>(istream& is, Client& c)
+  {
+    string name, gender;		// 一時的に値を格納
+    int age;			// 
+    is >> name >> age >> gender;	// 入力ストリームから読み取り
+    c.name = name;
+    c.age = age;
+    c.is_male = (gender == "male"); // 性別は読み取った文字列が "male" か否かを格納
+    return is;
+  }
+
+  // 
   // メイン関数
   // 
   int main(void){
     // 確保しておく顧客データのサイズ
     const int mem_size = 10;
-    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化
-    // 名前
-    string name_list[mem_size] =
-      { "Alice", "Bob", "Cathy", "David", "Ethan", "Flank", "Gina" };
-    // 年齢
-    int age_list[mem_size] =
-      { 23, 17, 32, 25, 48, 27, 42 };
-    // 性別
-    bool is_male_list[mem_size] =
-      { false, true, false, true, true, true, false};
-
     // 顧客データを格納する配列を定義
     Client client[mem_size];
 
-    // 顧客データを格納
-    for (int ID = 0; ID < mem_size; ++ID)
-      {
-	// 顧客の名前が空白ならループを脱出
-	if (name_list[ID] == "") break;
-	// 顧客情報を格納
-	client[ID].name = name_list[ID];
-	client[ID].age = age_list[ID];
-	client[ID].is_male = is_male_list[ID];
+      // 顧客情報の読み込み
+      ifstream ifs("data.txt");	// 入力ファイルストリームを開く
+      for (int ID = 0; ID < mem_size; ++ID){
+	if (ifs.eof()) break;    // ファイルの最後まで来たらループを脱出
+	ifs >> client[ID];       // >>演算子の overload により簡潔に記述できる
       }
+      ifs.close();		// ファイルを閉じる
 
     // 顧客データを表示
     for (int ID = 0; ID < mem_size; ++ID)
@@ -178,7 +277,7 @@
 	// 顧客の名前が空白ならループを脱出
 	if (client[ID].name == "") break;
 	// 顧客情報を表示
-	cout << client[ID] << endl; // <<演算子の overload により可能な実装
+	cout << client[ID] << endl; // <<演算子の overload により簡潔に記述できる
       }
   }
 #+END_SRC
