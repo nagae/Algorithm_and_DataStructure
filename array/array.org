@@ -11,7 +11,7 @@
 | Flank |   27 | male   |
 | Gina  |   42 | female |
 
-** COMMENT ナイーブな方法
+** ナイーブな方法
 以下のように人数分の名前・年齢・性別を格納するための変数を用意することもできるが, 
 顧客が増減するたびに膨大なソース・コードの修正が必要であり, とても現実的ではない.
 
@@ -147,7 +147,7 @@ Gina     42  female
      iof >> name >> age;
    #+END_SRC
    とする.
-2.
+
 #+BEGIN_SRC c++
   #include <iostream>		// 標準入出力
   #include <fstream>		// ファイル入出力
@@ -163,9 +163,9 @@ Gina     42  female
 		   bool *is_male_list)	 // 
   {
     cout << "name:" << name_list[ID] << "\t"
-	      << "age:" << age_list[ID] << "\t"
-	      << "gender:" << ((is_male_list[ID]) ? "male" : "female")
-	      << endl;
+	 << "age:" << age_list[ID] << "\t"
+	 << "gender:" << ((is_male_list[ID]) ? "male" : "female")
+	 << endl;
   }
 
   // 
@@ -178,29 +178,31 @@ Gina     42  female
     string name[mem_size];	// 名前
     int age[mem_size];		// 年齢
     bool is_male[mem_size];	// 性別
-
+  
     // 顧客情報の読み込み
     ifstream ifs("data.txt");	// 入力ファイルストリームを開く
-    for (int ID = 0; ID < mem_size; ++ID){
-      string tmp_name, tmp_gender; // 一時的に名前を保管
-      int tmp_age;		 // 一時的に年齢を保管
-      if (ifs.eof()) break;      // ファイルの最後まで来たらループを脱出
-      // ストリーム入力演算子を用いてファイルから値を読込む
-      ifs >> tmp_name >> tmp_age >> tmp_gender;
-      // 配列の各要素に値を代入
-      name[ID] = tmp_name;
-      age[ID] = tmp_age;
-      is_male[ID] = (tmp_gender == "male");
-    }
+    for (int ID = 0; ID < mem_size; ++ID)
+      {
+	string tmp_name, tmp_gender; // 一時的に名前を保管
+	int tmp_age;		 // 一時的に年齢を保管
+	if (ifs.eof()) break;      // ファイルの最後まで来たらループを脱出
+	// ストリーム入力演算子を用いてファイルから値を読込む
+	ifs >> tmp_name >> tmp_age >> tmp_gender;
+	// 配列の各要素に値を代入
+	name[ID] = tmp_name;
+	age[ID] = tmp_age;
+	is_male[ID] = (tmp_gender == "male");
+      }
     ifs.close();			// ファイルを閉じる
 
     // 顧客情報の表示
-    for (int ID = 0; ID < mem_size; ++ID){
-      // 顧客の名前が空白だった場合はループを脱出
-      if (name[ID] == "") break;
-      // 顧客情報を表示
-      show_client(ID, name, age, is_male);
-    }
+    for (int ID = 0; ID < mem_size; ++ID)
+      {
+	// 顧客の名前が空白だった場合はループを脱出
+	if (name[ID] == "") break;
+	// 顧客情報を表示
+	show_client(ID, name, age, is_male);
+      }
   }
 #+END_SRC
 
