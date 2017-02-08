@@ -16,46 +16,47 @@
 顧客が増減するたびに膨大なソース・コードの修正が必要であり, とても現実的ではない.
 
 #+BEGIN_SRC c++
-#include <iostream>
-#include <string>
+  #include <iostream>
+  #include <string>
+  using namespace std;		// 名前空間 std を利用
 
-// 標準出力に顧客情報を出力
-void show_client(std::string name, int age, bool is_male)
-{
-  std::cout << "name:" << name << "\t"
-	    << "age:" << age << "\t"
-	    << "gender:" << ((is_male) ? "male" : "female")
-	    << std::endl;
-}
+  // 標準出力に顧客情報を出力
+  void show_client(string name, int age, bool is_male)
+  {
+    cout << "name:" << name << "\t"
+	 << "age:" << age << "\t"
+	 << "gender:" << ((is_male) ? "male" : "female")
+	 << endl;
+  }
 
-// メイン関数
-int main(void)
-{
-  // 名前を格納する変数
-  std::string name1, name2, name3, name4, name5, name6, name7;
-  // 年齢を格納する変数
-  int age1, age2, age3, age4, age5, age6, age7;
-  // 性別を格納する変数
-  bool is_male1, is_male2, is_male3, is_male4, is_male5, is_male6, is_male7;
-  
-  // 1人目の顧客情報
-  name1 = "Alice";
-  age1 = 23;
-  is_male1 = false;
-  
-  // 2人目の顧客情報
-  name2 = "Bob";
-  age2 = 17;
-  is_male2 = true;
-  
-  // 以下, 3人目以降を代入
-  // :
-  
-  // 顧客情報の表示
-  show_client(name1, age1, is_male1); // 1人目
-  show_client(name2, age2, is_male2); // 2人目
-  // 以下, 3人目以降を出力
-}
+  // メイン関数
+  int main(void)
+  {
+    // 名前を格納する変数
+    string name1, name2, name3, name4, name5, name6, name7;
+    // 年齢を格納する変数
+    int age1, age2, age3, age4, age5, age6, age7;
+    // 性別を格納する変数
+    bool is_male1, is_male2, is_male3, is_male4, is_male5, is_male6, is_male7;
+
+    // 1人目の顧客情報
+    name1 = "Alice";
+    age1 = 23;
+    is_male1 = false;
+
+    // 2人目の顧客情報
+    name2 = "Bob";
+    age2 = 17;
+    is_male2 = true;
+
+    // 以下, 3人目以降を代入
+    // :
+
+    // 顧客情報の表示
+    show_client(name1, age1, is_male1); // 1人目
+    show_client(name2, age2, is_male2); // 2人目
+    // 以下, 3人目以降を出力
+  }
 #+END_SRC
 
 ** 配列を使う
@@ -67,13 +68,13 @@ int main(void)
 #+BEGIN_SRC c++
   #include <iostream>
   #include <string>
-
   using namespace std;
+
   // 標準出力に顧客情報を出力
-  void show_client(int ID,		 // 出力する顧客のID
-		   string * name_list, // 名前・年齢・性別の各リストのポインタを渡す
-		   int * age_list,		 // 
-		   bool * is_male_list)	 // 
+  void show_client(int ID,	    // 出力する顧客のID
+		   string *name_list, // 名前・年齢・性別の各配列をポインタで渡す
+		   int *age_list,     
+		   bool *is_male_list)
   {
     cout << "name:" << name_list[ID] << "\t"
 	 << "age:" << age_list[ID] << "\t"
@@ -85,9 +86,9 @@ int main(void)
   int main(void){
     // 確保しておく顧客データのサイズ
     const int mem_size = 10;
-    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化している
+    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化
     // 名前
-    std::string name_list[mem_size] =
+    string name_list[mem_size] =
       { "Alice", "Bob", "Cathy", "David", "Ethan", "Flank", "Gina" };
     // 年齢
     int age_list[mem_size] =
@@ -108,19 +109,23 @@ int main(void)
 #+END_SRC
 
 ** 自作クラスの配列を使う
-上述の方法では, 各顧客についての情報が変化する(eg. 生年月日を追加する)とソース・コード全体を変更しなければならない. 以下では, 各顧客の情報を =Client= という自作の *クラス* で保持している.
+上述の方法では, 各顧客についての情報が変化する(eg. 血液型を追加する)とソース・コード全体を変更しなければならない. 以下では, 各顧客の情報を =Client= という自作の *クラス* で保持している.
+以下は若干高度だが, 理解しておくと役に立つ.
+1. クラス・メンバ変数(=name, age, is_male=)を =public:= の後に宣言することで, *構造体* と同様に自由にアクセスできる.
+2. クラスを定義した後, *ストリーム出力演算子* =<<= を overload することで, クライアント情報を出力するのに =cout << client[ID] << endl= といった簡潔かつ自由度の高い実装が可能.
 
 #+BEGIN_SRC c++
   #include <iostream>
   #include <string>
+  using namespace std;		// 名前空間 std を利用
 
   // 
   // 顧客データを格納するクラスを定義
   // 
   class Client
   {
-  public:				// public: とすることで, 以下のメンバ変数に自由にアクセス
-    std::string name;		// 名前
+  public:	     // public: とすることで, 以下のメンバ変数に自由にアクセス
+    string name;			// 名前
     int age;			// 年齢
     bool is_male;			// 性別
   };
@@ -128,7 +133,7 @@ int main(void)
   // 
   // <<演算子 の overload による顧客データの出力
   // 
-  std::ostream &operator<<(std::ostream &os, const Client &c)
+  ostream& operator<<(ostream& os, const Client& c)
   {
     os << "name:" << c.name << "\t"
        << "age:" << c.age << "\t"
@@ -142,9 +147,9 @@ int main(void)
   int main(void){
     // 確保しておく顧客データのサイズ
     const int mem_size = 10;
-    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化している
+    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化
     // 名前
-    std::string name_list[mem_size] =
+    string name_list[mem_size] =
       { "Alice", "Bob", "Cathy", "David", "Ethan", "Flank", "Gina" };
     // 年齢
     int age_list[mem_size] =
@@ -173,7 +178,7 @@ int main(void)
 	// 顧客の名前が空白ならループを脱出
 	if (client[ID].name == "") break;
 	// 顧客情報を表示
-	std::cout << client[ID] << std::endl; // <<演算子の overload により可能な実装
+	cout << client[ID] << endl; // <<演算子の overload により可能な実装
       }
   }
 #+END_SRC
