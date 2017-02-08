@@ -64,7 +64,6 @@ int main(void)
 関数 =show_client= にはこれらの配列の *ポインタ* (変数名に =*= をつけている)を
 渡していることに注意されたい.
 
-#+INCLUDE: sample1.cpp
 #+BEGIN_SRC c++
   #include <iostream>
   #include <string>
@@ -95,21 +94,86 @@ int main(void)
     // 性別
     bool is_male_list[mem_size] =
       { false, true, false, true, true, true, false};
-  
+
     // 顧客情報の表示
-    int ID;
-    for (ID = 0; ID < mem_size; ++ID){
+    for (int ID = 0; ID < mem_size; ++ID)
+    {
       // 名前が空だった場合はループを脱出
-      if (name_list[ID] == "")
-	{
-	  break;
-	}
+      if (name_list[ID] == "") break;
       // 顧客情報を表示
       show_client(ID, name_list, age_list, is_male_list);
     }
   }
 #+END_SRC
 
-** 構造体の配列を使う
-上述の方法では, 各顧客についての情報が変化する(eg. 生年月日を追加する)とソース・コード全体を変更しなければならない. 以下では, 各顧客の情報を *構造体* で保持している.
+** 自作クラスの配列を使う
+上述の方法では, 各顧客についての情報が変化する(eg. 生年月日を追加する)とソース・コード全体を変更しなければならない. 以下では, 各顧客の情報を =Client= という自作の *クラス* で保持している.
+
+#+BEGIN_SRC c++
+  #include <iostream>
+  #include <string>
+
+  // 
+  // 顧客データを格納するクラスを定義
+  // 
+  class Client
+  {
+  public:				// public: とすることで, 以下のメンバ変数に自由にアクセス
+    std::string name;		// 名前
+    int age;			// 年齢
+    bool is_male;			// 性別
+  };
+
+  // 
+  // <<演算子 の overload による顧客データの出力
+  // 
+  std::ostream &operator<<(std::ostream &os, const Client &c)
+  {
+    os << "name:" << c.name << "\t"
+       << "age:" << c.age << "\t"
+       << "gender:" << ((c.is_male) ? "male" : "female");
+    return os;
+  }
+
+  // 
+  // メイン関数
+  // 
+  int main(void){
+    // 確保しておく顧客データのサイズ
+    const int mem_size = 10;
+    // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化している
+    // 名前
+    std::string name_list[mem_size] =
+      { "Alice", "Bob", "Cathy", "David", "Ethan", "Flank", "Gina" };
+    // 年齢
+    int age_list[mem_size] =
+      { 23, 17, 32, 25, 48, 27, 42 };
+    // 性別
+    bool is_male_list[mem_size] =
+      { false, true, false, true, true, true, false};
+
+    // 顧客データを格納する配列を定義
+    Client client[mem_size];
+
+    // 顧客データを格納
+    for (int ID = 0; ID < mem_size; ++ID)
+      {
+	// 顧客の名前が空白ならループを脱出
+	if (name_list[ID] == "") break;
+	// 顧客情報を格納
+	client[ID].name = name_list[ID];
+	client[ID].age = age_list[ID];
+	client[ID].is_male = is_male_list[ID];
+      }
+
+    // 顧客データを表示
+    for (int ID = 0; ID < mem_size; ++ID)
+      {
+	// 顧客の名前が空白ならループを脱出
+	if (client[ID].name == "") break;
+	// 顧客情報を表示
+	std::cout << client[ID] << std::endl; // <<演算子の overload により可能な実装
+      }
+  }
+#+END_SRC
 
