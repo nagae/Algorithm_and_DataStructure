@@ -16,19 +16,13 @@
 顧客が増減するたびに膨大なソース・コードの修正が必要であり, とても現実的ではない.
 
 1. 標準入出力ライブラリ =iostream= を使い, 
-   #+BEGIN_SRC c
-     printf("%s %d\n", name, age);
-   #+END_SRC
+   =printf("%s %d\n", name, age);=
    などの代わりに
-   #+BEGIN_SRC c++
-     cout << name << age << endl;
-   #+END_SRC
+   =cout << name << age << endl;=
    とする.
 2. =using namespace= を使ってデフォルトの名前空間を =std= とする. そうしないと上記のコードが
    以下のようにごちゃっとする.
-   #+BEGIN_SRC c++
-     std::cout << name << age << std::endl;
-   #+END_SRC
+   =std::cout << name << age << std::endl;=
 #+BEGIN_SRC c++
   #include <iostream>		// 標準入出力
   #include <string>		// 文字列
@@ -136,17 +130,8 @@ Flank    27  male
 Gina     42  female
 #+END_SRC
 
-1. ファイル入出力ライブラリ =fstream= を使い, 
-   #+BEGIN_SRC c
-     fp = fopen("data.txt");
-     fscanf(fp, "%s %d", &name, &age);
-   #+END_SRC
-   などの代わりに
-   #+BEGIN_SRC c++
-     ifstream iof("data.txt");
-     iof >> name >> age;
-   #+END_SRC
-   とする.
+1. ファイル入出力ライブラリ =fstream= を使い, =fp = fopen("data.txt"); fscanf(fp, "%s %d", &name, &age);=
+   などの代わりに =ifstream iof("data.txt"); iof >> name >> age;= とする.
 
 #+BEGIN_SRC c++
   #include <iostream>		// 標準入出力
