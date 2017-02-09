@@ -32,8 +32,8 @@
   とごちゃっとする.
 - Cの文字列は =char= 型の *配列* として実装されており, その操作には =<string.h>= ライブラリにある
   下記のような関数を用いる.
-  | 文字列の代入 | =strcpy(name, "Alice")= | =name= に ="Alice"= を代入                          |
-  | 文字列の比較 | =strcmp(name, "Bob")=   | =name= と ="Bob"= を比較し, 一致するなら =0= を返す |
+  | 文字列の代入 | =strcpy(name, "Alice")= | =name= に "Alice" を代入                            |
+  | 文字列の比較 | =strcmp(name, "Bob")=   | =name= と "Bob" を比較し, 一致するなら 0 を返す     |
   | 文字列の長さ | =strlen(name)=          | =name= の長さを求める                               |
 #+TBLFM: 
 - C++ には文字列を扱う =<string>= ライブラリ中に =string= という型が用意されており,
