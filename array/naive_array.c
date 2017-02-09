@@ -1,30 +1,24 @@
 #include <stdio.h>		// 標準入出力
 #include <string.h>		// 文字列操作
 #include <stdbool.h>		// ブール型
-#define buf_name 12		// 名前の長さの最大値
 
-// 
-// 標準出力に顧客情報を出力
-// 
-void show_client(char *name, int age, bool is_male)
-{
-  printf("| %-10s | %3d | %-6s |\n",
-	 name, age,
-	 (is_male) ? "male" : "female");
-  // 文字列は * を使ったポインタ渡しにしている.
-  // %-10s は左詰めで10文字の文字列を表す書式.
-  // 性別は3項演算子を使って is_male が true なら "male" そうでなければ "female" を表示.
-}
+#define NAME_SIZE 12		// 名前長の最大値
+
+// ----------------------------------------
+// 関数ヘッダ
+// ----------------------------------------
+// 顧客情報の出力
+void show_client(char name[], int age, bool is_male);
 
 
-// 
+// ----------------------------------------
 // メイン関数
-// 
+// ----------------------------------------
 int main(void)
 {
   // 名前を格納する変数
-  char name1[buf_name], name2[buf_name], name3[buf_name],
-    name4[buf_name], name5[buf_name], name6[buf_name], name7[buf_name];
+  char name1[NAME_SIZE], name2[NAME_SIZE], name3[NAME_SIZE],
+    name4[NAME_SIZE], name5[NAME_SIZE], name6[NAME_SIZE], name7[NAME_SIZE];
   // 年齢を格納する変数
   int age1, age2, age3, age4, age5, age6, age7;
   // 性別を格納する変数
@@ -50,4 +44,21 @@ int main(void)
   // :
 
   return 0;
+}
+
+
+
+// ----------------------------------------
+// 標準出力に顧客情報を出力
+// ----------------------------------------
+void show_client(char name[], int age, bool is_male)
+{
+  printf("| %-10s | %3d | %-6s |\n",
+	 name, age,
+	 (is_male) ? "male" : "female");
+  /*
+    文字列は char 配列なので name[] とポインタ渡しにしている.
+    %-10s は左詰めで10文字の文字列を表す書式.
+    性別は3項演算子を使って is_male が true なら "male" そうでなければ "female" を表示.
+  */
 }
