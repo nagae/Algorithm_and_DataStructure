@@ -19,15 +19,17 @@
 - [[file:naive_array.cpp][C++による実装]]
 
 *** C vs C++
-- 標準入出力ライブラリ =iostream= を使い, 
-  =printf("%s %d\n", name, age);=
-  などの代わりに
-  =cout << name << age << endl;=
-  とする.
-- =using namespace= を使ってデフォルトの名前空間を =std= とする. そうしないと上記のコードが
-  以下のようにごちゃっとする.
-  =std::cout << name << age << std::endl;=
+- Cの標準入出力ライブラリは =<stdio.h>= で, 
+  標準出力への書き出しは =printf("%-10s %3d", name, age);= などとする.
+- C++の標準入出力ライブラリは =<iostream>= および =<iomanip>= で,
+  標準出力での書き出しは
+  =cout << setw(10) << left << name << setw(3) << right << dec << age << endl;=
+  などとする.
 
+  その際, =using namespace= を使ってデフォルトの名前空間を =std= にしている.
+  そうしないと上記のコードが
+  =std::cout << std::setw(10) << std::left << name << std::setw(3) << std::right << std::dec << age << std::endl;=
+  とごちゃっとする.
 
 ** 配列を使う
 こうした多くのデータを取り扱うには *配列* を用いるのが一般的. 
@@ -37,6 +39,7 @@
 - [[file:array_with_initialize.cpp][C++による実装]]
 
 *** C vs C++
+
 - 配列のサイズは =const int= (整数定数)型 =mem_size= で与えている.
 - ={}= を使うことで, 配列の宣言と同時に初期化を行なっている.
 - 関数 =show_client= にはこれらの配列の *ポインタ* (変数名に =*= をつけている)を渡している.
