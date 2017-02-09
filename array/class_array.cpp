@@ -19,12 +19,12 @@ public:	     // public: とすることで, 以下のメンバ変数に自由に
 // 
 // <<演算子 の overload による顧客データの出力
 // 
-ostream& operator<<(ostream& os, const Client& c)
+ostream& operator<<(ostream& os, const Client& client) // os, c ともに参照渡し
 {
   os << "| "
-     << setw(10) << left << c.name << " | "
-     << setw(3) << right << dec << c.age << " | "
-     << setw(6) << left << ( ( c.is_male) ? "male" : "female" ) << " |";
+     << setw(10) << left << client.name << " | "
+     << setw(3) << right << dec << client.age << " | "
+     << setw(6) << left << ( ( client.is_male) ? "male" : "female" ) << " |";
   return os;
 }
 
@@ -32,16 +32,16 @@ ostream& operator<<(ostream& os, const Client& c)
 // 
 // >>演算子 の overload による顧客データの読み取り
 // 
-istream& operator>>(istream& is, Client& c)
+istream& operator>>(istream& is, Client& client)
 {
   string gender = "";		   // 一時的に性別文字列を格納
-  is >> c.name >> c.age >> gender; // 入力ストリームから顧客データを読み取る
+  is >> client.name >> client.age >> gender; // 入力ストリームから顧客データを読み取る
   // 性別は性別文字列が "male" か否かで判断.
   // ただし, 性別文字列が "male" でも "female" でも無かった場合はその顧客データを無効(顧客名を空)にする.
   if ( gender == "male" || gender == "female" ){
-      c.is_male = (gender == "male"); 
+      client.is_male = (gender == "male"); 
   } else {
-    c.name = "";
+    client.name = "";
   }
   return is;
 }

@@ -46,15 +46,15 @@ int main(void)
   int ID = 0;			// 次に入力する顧客のID(=現時点での顧客数)
   while ( !feof(ifs) && ID < mem_size )
     {
-      char tmp_gender[7];	// 一時的に性別文字列を保管
+      char gender[7];	// 一時的に性別文字列を保管
       // (性別文字列に格納するのは最大でも "female" の 6個の char と 文字列終端'\0'
       // なので必要な配列のサイズは7)
       // fscanf を用いてファイルから顧客データを読込む
-      int num = fscanf( ifs, "%s%d%7s", client[ID].name, &client[ID].age, tmp_gender );
+      int num = fscanf( ifs, "%s%d%7s", client[ID].name, &client[ID].age, gender );
       // 3つのデータを読み込めなかった場合は, 当該顧客データを無効(顧客名を空)にする
       if ( num < 3 ) client[ID].name[0]='\0';
-      // is_male は tmp_gender が "male" なら true, そうでなければ false.
-      client[ID].is_male = ( strcmp(tmp_gender, "male") == 0 );
+      // is_male は gender が "male" なら true, そうでなければ false.
+      client[ID].is_male = ( strcmp(gender, "male") == 0 );
  
       ID++;			// 顧客数を増やす
     }
