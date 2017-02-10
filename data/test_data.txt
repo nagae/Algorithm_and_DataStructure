@@ -1,0 +1,7 @@
+Alice    23   female
+Bob      17   male
+Cathy    32   female
+David    25   male
+Ethan    48   male
+Frank    27   male
+Gina     42   female

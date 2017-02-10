@@ -106,7 +106,55 @@
 
 * ファイルから入力する
 データをソース・コードに直接記述するのではなく, 
-以下のように顧客データをカンマとスペースで区切った =data.txt= というファイルから読み込めるようにしたい.
+以下のように顧客データをスペースで区切った =data.txt= というファイルから読み込めるようにしたい.
+#+BEGIN_SRC txt
+Alice  23 female
+Bob    17 male
+Cathy  32 female
+David  25 male
+Ethan  48 male
+Frank  27 male
+Gina   42 female
+#+END_SRC
+** C vs C++
+- C のファイル入力には =<stdio.h>= に含まれる =FILE= 型のファイルストリームに対し,
+  =fopen=, =fscanf=, =fgets=, =fclose= などの関数を使う:
+  #+BEGIN_SRC C
+    // ファイルストリームを宣言して入力モードで開く
+    FILE ifs;			
+    ifs = fopen("data.txt", "r"); 
+    // ファイルストリームからname と age を読込む
+    char name[10];
+    int age;
+    fscanf(ifs, "%s%d", name, &age); 
+    // ファイルストリームから1行読み込んでバッファに格納する
+    char buf[100];			// 読み込んだ行を格納するバッファ
+    fgets(buf, 100, ifs);		
+    // ファイルストリームを閉じる
+    fclose(ifs);			
+  #+END_SRC
+- C++ ではファイル入出力ライブラリ =fstream= に含まれる =ifstream= 型のファイルストリームや
+  =>>= 演算子, =getline= 関数を使う.
+  #+BEGIN_SRC C++
+    // 入力ファイルストリームを宣言して開く
+    ifstream ifs("data.txt");      	// 宣言後, ifs.open("data.txt") としてもよい.
+    // ファイルストリームからname と age を読込む
+    string name;
+    int age;
+    ifs >> name >> age;		
+    // 入力ファイルストリームから1行読み込んでバッファに格納する
+    string buf;		       // 読み込んだ行を格納するバッファ
+    getline(ifs, buf);	       
+    // 入力ファイルストリームを閉じる
+    ifs.close();		       
+  #+END_SRC
+  
+  
+
+
+* CSVファイルから入力する
+データをソース・コードに直接記述するのではなく, 
+以下のように顧客データをカンマとスペースで区切った =data.csv= というファイルから読み込めるようにしたい.
 #+BEGIN_SRC txt
 Alice, 23, female
 Bob, 17, male
@@ -117,27 +165,18 @@ Frank, 27, male
 Gina, 42, female
 #+END_SRC
 
-- [[file:array_from_file.c][Cによる実装]]
-- [[file:array_from_file.cpp][C++による実装]]
-
+- [[file:array_from_csv.c][Cによる実装]]
+- [[file:array_from_csv.cpp][C++による実装]]
 ** ソース・コード解説
-- まず入力ファイルストリームから1行読み込んでバッファに格納し,
-  そのバッファからカンマ・空白で区切られた顧客データ(名前・年齢・性別)を取得している.
+- 入力ファイルストリームから1行読み込んでバッファに格納し,
+  そのバッファからカンマで区切られた顧客データ(名前・年齢・性別)を取得している.
+
   データの欠損などで正しく顧客情報が取得できない場合は, 
   その顧客データを無効(名前を空文字列)にしている.
 
-** C vs C++
-- C のファイル入力には =<stdio.h>= に含まれる =FILE= 型のファイルストリームに対し,
-  =fopen=, =fgets=, =fclose= などの関数を使う:
-  #+BEGIN_SRC C
-    FILE ifs;			// ファイルストリームを宣言
-    char buf[100];			// 読み込んだ行を格納するバッファ
-    ifs = fopen("data.txt", "r");	// 入力モードでファイルストリームを開く
-    fgets(buf, 100, ifs);		// ファイルストリームから1行読み込んで buf に格納する
-    fclose(ifs);			// ファイルストリームを閉じる
-  #+END_SRC
 
-  バッファから顧客情報を読込むには, =strtok= 関数を用いて, 
+** C vs C++
+- バッファから顧客情報を読込むには, =strtok= 関数を用いて, 
   カンマで区切られた文字列を =token= に読み込み, そこから顧客の名前・年齢・性別を
   取得している.
   #+BEGIN_SRC c
@@ -157,16 +196,7 @@ Gina, 42, female
     */
 
   #+END_SRC
-- C++ ではファイル入出力ライブラリ =fstream= に含まれる =ifstream= 型のファイルストリームや
-  =getline= 関数を使う.
-  #+BEGIN_SRC C++
-    ifstream ifs("data.txt");      // 入力ファイルストリームを宣言して開く
-    string buf;		       // 読み込んだ行を格納するバッファ
-    getline(ifs, buf);	       // 入力ファイルストリームから1行読み込んで buf に格納する
-    ifs.close();		       // 入力ファイルストリームを閉じる
-  #+END_SRC
-  
-  バッファから顧客情報を読込むには, string 型の =buf= から
+- バッファから顧客情報を読込むには, string 型の =buf= から
   =<sstrem>= ライブラリにある文字列入力ストリーム =istringstream= を構築し,
   =getline= 関数を用いてカンマで区切られた文字列を  =token= に読み込み, 
   そこから顧客の名前・年齢・性別を取得している.
@@ -192,8 +222,8 @@ Gina, 42, female
 * 構造体/クラスを使う
 上述の方法では, 各顧客についての情報が変化する(eg. 血液型を追加する)とソース・コード全体を変更しなければならない. そこで, 各顧客の情報を格納する =Client= という *構造体* や *クラス* を用いると汎用性が高まる.
 
-- [[file:struct_array.c][Cによる実装]]
-- [[file:class_array.cpp][C++による実装]]
+- [[file:array_of_struct.c][Cによる実装]]
+- [[	file:array_of_class.cpp][C++による実装]]
 
 ** C vs C++
 - C の構造体の *メンバ変数* (=name, age, is_male=)は, 基本的にどの関数からでも直接アクセスできる. 

@@ -1,4 +1,4 @@
 * アルゴリズムとデータ構造
-- [[file:array/readme.org][配列]]
-- [[file:list/list.org][リスト]]
+- [[file:prog/array/readme.org][配列]]
+- [[file:prog/list/list.org][リスト]]
   

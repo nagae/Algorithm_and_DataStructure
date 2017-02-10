@@ -13,8 +13,8 @@ const int BUFFER_SIZE = 100;	// ファイル読み込み時のバッファサイ
 // ----------------------------------------
 // 出力ストリームに顧客情報を出力
 ostream& show_client(ostream& os, const string& name, int age, bool is_male);
-// 入力ストリームからの顧客情報の読込み
-istream& read_client(istream& iss, string& name, int& age, bool& is_male);
+// ファイルストリームからの顧客情報の読込み
+bool read_client_from_txt(ifstream& ifs, string& name, int& age, bool& is_male);
 
 
 // ----------------------------------------
@@ -30,18 +30,18 @@ int main(void)
 
   // ----------------------------------------
   // 顧客情報の読込
-  ifstream ifs("data.txt"); // 入力ファイルストリームを開く
+  ifstream ifs("test_data.txt"); // 入力ファイルストリームを開く
   int ID = 0;		    // 次の顧客ID(=これまでに読み込んだ顧客数)
-  string buf;		    // 読み込んだ行を格納するバッファ
-  while ( ID < CUSTOMER_SIZE &&
-	  getline(ifs, buf) )	// ファイルストリームから1行読み込んで buf に格納
+  while ( ID < CUSTOMER_SIZE && !ifs.eof() )
     {
-      // buf から顧客情報を読み取る
-      istringstream iss(buf);
-      read_client(iss, name[ID], age[ID], is_male[ID]);
-      // 読み取った顧客情報が有効なら, 次の顧客ID(=読み込んだ顧客数)を増やす
-      if ( name[ID] != "" ){ 
+      // 入力ファイルストリームから顧客情報を読み取る
+      if ( read_client_from_txt(ifs, name[ID], age[ID], is_male[ID]) ){
+	// 顧客情報が正常に読み取れたなら, 次の顧客ID(=読み込んだ顧客数)を増やす
 	ID ++;
+      } else {
+	// 顧客情報の読み取りに問題があったなら, その顧客情報を無効(名前を空文字列)にして次の行へ
+	name[ID] = "";
+	continue;
       }
     }
   ifs.close();			// ファイルストリームを閉じる
@@ -54,47 +54,27 @@ int main(void)
     if ( name[ID] == "" ) break;
     // 顧客情報を表示
     show_client( cout, name[ID], age[ID], is_male[ID] );
-  }
-  
+  } 
 }
 
 
 
 // ----------------------------------------
-// 入力ストリームからの顧客情報の読込み
+// ファイルストリームからの顧客情報の読込み
 // ----------------------------------------
-istream& read_client(istream& is, string& name, int& age, bool& is_male)
+bool read_client_from_txt(ifstream& ifs, string& name, int& age, bool& is_male)
 {
-  string token;
-  // 先頭から最初のカンマまでの文字列を顧客の名前とする
-  if ( getline(is, token, ',') ){
-    name = token;
-  } else {
-    // 文字列が取得できなければその顧客データを無効(名前を空字列)にして return
-    name = "";
-    return is;
-  } 
-  
-  // 2つ目のカンマまでの文字列から顧客の年齢を取得する
-  if ( getline(is, token, ',') ) {
-    age = stoi(token);	// 関数 stoi() で string型を int型に変換
-  } else {
-    // 文字列が取得できなければその顧客データを無効(名前を空字列)にして return
-    name = "";
-    return is;
+  string gender = "";		// 性別文字列
+  ifs >> name >> age >> gender;
+
+  // gender までのデータが読み取れなかったり, 読み取った性別文字列に "male" が含まれていなければ false を返す
+  if ( gender.find("male")==string::npos ){
+    return false;
   }
-  
-  // 最後までの文字列から顧客の性別を取得する
-  if ( getline(is, token, '\n') &&
-       token.find("male") < string::npos ){
-    // token が "female" を含まないなら is_male を true にする.
-    is_male = ( token.find("female") == string::npos );
-  } else {
-    // 文字列が取得できないか, "male" を含んでなければその顧客データを無効にして return
-    name = "";
-    return is;
-  }
-  return is;
+  // gender が "female" を含まないなら is_male を true にする.
+  is_male = ( gender.find("female") == string::npos );
+  // 顧客データの全てが正常に読み取れたら true を返す
+  return true;
 }
 
 // ----------------------------------------
