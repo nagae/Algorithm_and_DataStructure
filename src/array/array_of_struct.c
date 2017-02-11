@@ -11,7 +11,7 @@
 // ----------------------------------------
 // 顧客データを格納する構造体
 // ----------------------------------------
-typedef struct client
+typedef struct
 {
   char name[NAME_MAXLEN];	// 名前
   int age;			// 年齢
