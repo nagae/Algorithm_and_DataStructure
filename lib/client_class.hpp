@@ -1,3 +1,6 @@
+#ifndef CLIENT_CLASS_HPP
+#define CLIENT_CLASS_HPP
+
 #include <iostream>		// 標準入出力
 #include <iomanip>		// 入出力操作
 #include <fstream>		// ファイル入出力
@@ -28,3 +31,5 @@ ostream& operator<<(ostream& os, const Client& client);
 bool read_client_from_txt(ifstream& ifs, Client& client);
 // CSVファイルストリームからの顧客情報の読込み
 bool read_client_from_csv(ifstream& ifs, Client& client);
+
+#endif

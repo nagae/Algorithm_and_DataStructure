@@ -3,7 +3,7 @@
 // ----------------------------------------
 // 顧客情報をセット. 顧客情報が不適切な場合は顧客情報を無効(名前を空文字列)にして false を返す
 // ----------------------------------------
-bool set_client(struct Client *client, char name[], int age, char gender[])
+bool set_client(Client *client, char name[], int age, char gender[])
 {
   // 名前文字列が空文字列だったり, 性別文字列に "male" が含まれていなければ
   // 顧客情報を無効(名前を空文字列)にして false を返す
@@ -23,7 +23,7 @@ bool set_client(struct Client *client, char name[], int age, char gender[])
 // ----------------------------------------
 // CSVファイルストリームからの顧客情報の読込み
 // ----------------------------------------
-bool read_client_from_csv(FILE *ifs, struct Client *client)
+bool read_client_from_csv(FILE *ifs, Client *client)
 {
   // ファイルストリームから1行読み込んでバッファに格納
   char buf[BUFFER_SIZE] = {};	// 読み込んだ行を格納するバッファ
@@ -63,7 +63,7 @@ bool read_client_from_csv(FILE *ifs, struct Client *client)
 // ----------------------------------------
 // ファイルストリームからの顧客情報の読込み
 // ----------------------------------------
-bool read_client_from_txt(FILE *ifs, struct Client *client)
+bool read_client_from_txt(FILE *ifs, Client *client)
 {
   // 一時格納用変数
   char name[NAME_MAXLEN];	// 名前
@@ -84,7 +84,7 @@ bool read_client_from_txt(FILE *ifs, struct Client *client)
 // ----------------------------------------
 // 標準出力に顧客情報を出力
 // ----------------------------------------
-void show_client(struct Client *client)
+void show_client(Client *client)
 {
   printf("| %-10s | %3d | %-6s |\n",
 	 client->name, client->age,

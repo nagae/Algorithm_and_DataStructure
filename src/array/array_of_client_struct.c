@@ -1,11 +1,12 @@
 #include "../../lib/client_struct.h"
+#include "../../lib/client_struct.h"
 #define CUSTOMER_SIZE 10	// 顧客数の最大値
 
 // ----------------------------------------
 // 関数ヘッダ
 // ----------------------------------------
-int read_client_set(char fname[], struct Client client[]);
-void show_client_set(struct Client client[]);
+int read_client_set(char fname[], Client client[]);
+void show_client_set(Client client[]);
 
 // ----------------------------------------
 // メイン関数
@@ -14,7 +15,7 @@ int main(int argc, char **argv)
 {
   // ----------------------------------------
   // 顧客データを格納する Client 型構造体の配列を宣言
-  struct Client client[CUSTOMER_SIZE];
+  Client client[CUSTOMER_SIZE];
   // ----------------------------------------
   // 顧客情報の読込
   if (argc > 1) {
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
 // ----------------------------------------
 // 指定したファイルから顧客データを読込む
 // ----------------------------------------
-int read_client_set(char fname[], struct Client client[])
+int read_client_set(char fname[], Client client[])
 {
   FILE *ifs;			// ファイルストリーム
   ifs = fopen(fname, "r");	// ファイルストリームを開く
@@ -62,7 +63,7 @@ int read_client_set(char fname[], struct Client client[])
 // ----------------------------------------
 // 全顧客データを標準出力に表示
 // ----------------------------------------
-void show_client_set(struct Client client[])
+void show_client_set(Client client[])
 {
   for ( int ID = 0; ID < CUSTOMER_SIZE; ++ID )
   {
