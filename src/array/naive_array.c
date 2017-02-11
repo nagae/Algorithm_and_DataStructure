@@ -2,7 +2,7 @@
 #include <string.h>		// 文字列操作
 #include <stdbool.h>		// ブール型
 
-#define NAME_SIZE 12		// 名前長の最大値
+#define NAME_MAXLEN 12		// 名前の最大長
 
 // ----------------------------------------
 // 関数ヘッダ
@@ -17,8 +17,8 @@ void show_client(char name[], int age, bool is_male);
 int main(void)
 {
   // 名前を格納する変数
-  char name1[NAME_SIZE], name2[NAME_SIZE], name3[NAME_SIZE],
-    name4[NAME_SIZE], name5[NAME_SIZE], name6[NAME_SIZE], name7[NAME_SIZE];
+  char name1[NAME_MAXLEN], name2[NAME_MAXLEN], name3[NAME_MAXLEN],
+    name4[NAME_MAXLEN], name5[NAME_MAXLEN], name6[NAME_MAXLEN], name7[NAME_MAXLEN];
   // 年齢を格納する変数
   int age1, age2, age3, age4, age5, age6, age7;
   // 性別を格納する変数

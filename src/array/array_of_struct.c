@@ -3,7 +3,8 @@
 #include <string.h>		// 文字列操作
 #include <stdbool.h>		// ブール型
 
-#define NAME_SIZE 12		// 名前長の最大値
+#define NAME_MAXLEN 12		// 名前の最大長
+#define GENDER_MAXLEN 100	// 性別文字列の最大長
 #define CUSTOMER_SIZE 10	// 顧客数の最大値
 #define BUFFER_SIZE 100		// ファイル読み込み時のバッファサイズ
 
@@ -12,7 +13,7 @@
 // ----------------------------------------
 struct Client
 {
-  char name[NAME_SIZE];		// 名前
+  char name[NAME_MAXLEN];		// 名前
   int age;			// 年齢
   bool is_male;			// 性別
 };
@@ -21,6 +22,8 @@ struct Client
 // ----------------------------------------
 // 関数ヘッダ
 // ----------------------------------------
+// 顧客情報をセット. 顧客情報が不適切な場合は顧客情報を無効(名前を空文字列)にして false を返す
+bool set_client(struct Client *client, char name[], int age, char gender[]);
 // 顧客情報の出力
 void show_client(struct Client *client);
 // ファイルストリームからの顧客情報の読込み
@@ -43,11 +46,7 @@ int main(void)
   FILE *ifs;			// ファイルストリーム
   ifs = fopen("test_data.csv", "r");	// ファイルストリームを開く
 
-  /*
-    ファイルから1行づつバッファに取り込み, カンマ・空白で区切られた顧客データ(名前・年齢・性別)を格納する
-  */
   int ID = 0;			// 次の顧客ID(=これまでに読み込んだ顧客数)
-  char buf[BUFFER_SIZE] = {};	// 読み込んだ行を格納するバッファ
   while ( ID < CUSTOMER_SIZE && !feof(ifs) )
     {
       // ファイルストリームから顧客情報を読み取る
@@ -77,6 +76,26 @@ int main(void)
 
 
 // ----------------------------------------
+// 顧客情報をセット. 顧客情報が不適切な場合は顧客情報を無効(名前を空文字列)にして false を返す
+// ----------------------------------------
+bool set_client(struct Client *client, char name[], int age, char gender[])
+{
+  // 名前文字列が空文字列だったり, 性別文字列に "male" が含まれていなければ
+  // 顧客情報を無効(名前を空文字列)にして false を返す
+  if ( name[0] == '\0' || !strstr(gender, "male") ){
+    client->name[0] = '\0';
+    return false;
+  }
+
+  // client の各メンバ変数に顧客情報をセット
+  strcpy(client->name, name);
+  client->age = age;
+  client->is_male = !( strstr(gender, "female") );
+  // 顧客情報の全てが適切なら true を返す
+  return true;  
+}
+
+// ----------------------------------------
 // CSVファイルストリームからの顧客情報の読込み
 // ----------------------------------------
 bool read_client_from_csv(FILE *ifs, struct Client *client)
@@ -87,30 +106,33 @@ bool read_client_from_csv(FILE *ifs, struct Client *client)
     return false;		// 読み込めなければ false を返す
   }
 
+  // 一時格納用変数
+  char name[NAME_MAXLEN];	// 名前
+  int age;			// 年齢
+  char gender[GENDER_MAXLEN];	// 性別文字列
+
   // バッファからカンマで区切られたデータを取得する
   char *token;		    // トークン用のポインタ
   // 先頭から最初のカンマまでの文字列を顧客の名前とする
   if ( (token = strtok(buf, ",")) != NULL){
-    strcpy(client->name, token);
+    strcpy(name, token);
   } else {
     return false; // 文字列が取得できなければ false を返す
   }
   // 2つ目のカンマまでの文字列から顧客の年齢を取得する
   if ( (token = strtok(NULL, ",")) != NULL ){
-    client->age = atoi(token);	// 関数 atoi() で文字列型を int型に変換
+    age = atoi(token);	// 関数 atoi() で文字列型を int型に変換
   } else {
     return false; // 文字列が取得できなければ false を返す
   }
   // 最後までの文字列から顧客の性別を取得する
-  if ( (token = strtok(NULL, "\n")) != NULL &&
-       strstr(token, "male") ){
-    // 文字列が female を含んでいなければ is_male を true にする
-    client->is_male = ( !strstr(token, "female")  );
+  if ( (token = strtok(NULL, " \n")) != NULL ){
+    strcpy(gender, token);
   } else {
-    return false; // 文字列が取得できないか, "male" を含んでなければ false を返す
+    return false; // 文字列が取得できなければ false を返す
   }
-  // 顧客データの全てが正常に読み取れたら true を返す
-  return true;
+  // set_client を呼び出して顧客情報をセットする. 顧客情報が適切でなければ false を返す.
+  return set_client(client, name, age, gender);
 }
 
 // ----------------------------------------
@@ -118,15 +140,20 @@ bool read_client_from_csv(FILE *ifs, struct Client *client)
 // ----------------------------------------
 bool read_client_from_txt(FILE *ifs, struct Client *client)
 {
-  char gender[7];		// 性別文字列
-  int num_read = fscanf(ifs, "%s%d%s", client->name, &client->age, gender); // 読み取ったデータ
-  // 3つのデータが読み取れなかったり, 読み取った性別文字列に "male" が含まれていなければ false を返す
-  if ( num_read < 3 || !strstr(gender, "male") ){
+  // 一時格納用変数
+  char name[NAME_MAXLEN];	// 名前
+  int age;			// 年齢
+  char gender[GENDER_MAXLEN];	// 性別文字列
+
+  // fscan を使ってファイルストリームから name, age, gender を読み取り,
+  // set_client を使って顧客情報を格納する.
+  // 読み取れたデータが3個に満たない場合は顧客情報を無効(名前を空文字列)にして false を返す
+  if ( fscanf(ifs, "%s%d%s", name, &age, gender) < 3 ){
+    client->name[0] = '\0';
     return false;
   }
-  // 文字列が female を含んでいなければ is_male を true にする
-  client->is_male = !strstr(gender, "female");
-  return true;
+  // set_client を呼び出して顧客情報をセットする. 顧客情報が適切でなければ false を返す.
+  return set_client(client, name, age, gender);
 }
 
 // ----------------------------------------

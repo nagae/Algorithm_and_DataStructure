@@ -1,19 +1,42 @@
-#include "../lib/client_struct.h"
+#include "../../lib/client_struct.h"
 #define CUSTOMER_SIZE 10	// 顧客数の最大値
+
+// ----------------------------------------
+// 関数ヘッダ
+// ----------------------------------------
+int read_client_set(char fname[], struct Client client[]);
+void show_client_set(struct Client client[]);
 
 // ----------------------------------------
 // メイン関数
 // ----------------------------------------
-int main(void)
+int main(int argc, char **argv)
 {
   // ----------------------------------------
   // 顧客データを格納する Client 型構造体の配列を宣言
   struct Client client[CUSTOMER_SIZE];
-
   // ----------------------------------------
   // 顧客情報の読込
+  if (argc > 1) {
+    int num_client_set = read_client_set(argv[1], client);
+    printf("num client:%d\n", num_client_set);
+  }
+		    
+  // ----------------------------------------
+  // 顧客情報の表示
+  show_client_set(client);
+  
+  return 0;
+}
+
+
+// ----------------------------------------
+// 指定したファイルから顧客データを読込む
+// ----------------------------------------
+int read_client_set(char fname[], struct Client client[])
+{
   FILE *ifs;			// ファイルストリーム
-  ifs = fopen("test_data.csv", "r");	// ファイルストリームを開く
+  ifs = fopen(fname, "r");	// ファイルストリームを開く
 
   /*
     ファイルから1行づつバッファに取り込み, カンマ・空白で区切られた顧客データ(名前・年齢・性別)を格納する
@@ -33,9 +56,14 @@ int main(void)
       }
     }
   fclose(ifs);			// ファイルストリームを閉じる
-    
-  // ----------------------------------------
-  // 顧客情報の表示
+  return ID;			// 読み込んだ顧客数を返す
+}
+
+// ----------------------------------------
+// 全顧客データを標準出力に表示
+// ----------------------------------------
+void show_client_set(struct Client client[])
+{
   for ( int ID = 0; ID < CUSTOMER_SIZE; ++ID )
   {
     // 名前が空だった場合はループを脱出
@@ -43,6 +71,4 @@ int main(void)
     // 顧客情報を表示
     show_client( &client[ID] );
   }
-
-  return 0;
 }

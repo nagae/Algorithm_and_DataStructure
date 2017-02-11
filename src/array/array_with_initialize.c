@@ -2,7 +2,7 @@
 #include <string.h>		// 文字列操作
 #include <stdbool.h>		// ブール型
 
-#define NAME_SIZE 12		// 名前長の最大値
+#define NAME_MAXLEN 12		// 名前の最大長
 #define CUSTOMER_SIZE 10	// 顧客数の最大値
 #define BUFFER_SIZE 100		// ファイル読み込み時のバッファサイズ
 
@@ -21,7 +21,7 @@ int main(void)
   // ----------------------------------------
   // 名前・年齢・性別を格納する配列を宣言し, 同時に初期化
   // 名前
-  char name[CUSTOMER_SIZE][NAME_SIZE] =
+  char name[CUSTOMER_SIZE][NAME_MAXLEN] =
     { "Alice", "Bob", "Cathy", "David", "Ethan", "Flank", "Gina" };
   // 年齢
   int age[CUSTOMER_SIZE] =
