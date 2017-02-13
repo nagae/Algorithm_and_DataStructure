@@ -235,14 +235,20 @@ Gina, 42, female
 
   大きなメモリを使う構造体は, 実体ではなく, それを指す番地を渡して *ポインタ* として受け取るのが一般的. 
   #+BEGIN_SRC C
-    void func(Client* client){	// 受け取った client が Client型のポインタであることを明示
+    void func(Client client){ // func が呼び出されるたびに, client に構造体がコピーされる
       printf("%s %d",
-  	   client->name, client->age); // client が指す実体のメンバには -> 演算子でアクセスできる.
+  	 client.name, client.age); // client は実体なので, そのメンバには . 演算子でアクセス
+    }
+
+    void func2(Client *client){ // Client型構造体のポインタ
+      printf("%s %d",
+  	 client.name, client.age); // client が指す実体のメンバには -> 演算子でアクセスできる.
     }
 
     int main(void){
       Client client;		// Client型の変数を定義
-      func( &client);		// 関数 func に client を指すアドレスを渡すことを指示
+      func ( client );		// func に client のコピーを作って渡す. client のサイズが大きいと無駄が生じる.
+      func2( &client );		// func2 に client のアドレスを渡す
     }
   #+END_SRC
 
