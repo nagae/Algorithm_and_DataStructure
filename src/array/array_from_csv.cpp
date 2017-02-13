@@ -56,6 +56,7 @@ int main(void)
     if ( name[ID] == "" ) break;
     // 顧客情報を表示
     show_client( cout, name[ID], age[ID], is_male[ID] );
+    cout << endl;
   } 
 }
 
@@ -124,9 +125,8 @@ bool read_client_from_txt(ifstream& ifs, string& name, int& age, bool& is_male)
 ostream& show_client(ostream& os, const string& name, int age, bool is_male)
 {
   os << "| "
-       << setw(10) << left << name << " | "
-       << setw(3) << right << dec << age << " | "
-       << setw(6) << left << ( (is_male) ? "male" : "female" ) << " |"
-       << endl;
+     << setw(10) << left << name << " | "
+     << setw(3) << right << dec << age << " | "
+     << setw(6) << left << ( (is_male) ? "male" : "female" ) << " |";
   return os;
 }

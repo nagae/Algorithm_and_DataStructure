@@ -1,5 +1,5 @@
 CC = g++
-LIB_DIR = ../../lib
+LIB_DIR = ../client
 CFLAGS = 
 PROGRAM = array_of_client_class
 OBJS = array_of_client_class.o $(LIB_DIR)/client_class.o

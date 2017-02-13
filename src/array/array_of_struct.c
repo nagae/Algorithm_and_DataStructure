@@ -24,8 +24,8 @@ typedef struct
 // ----------------------------------------
 // 顧客情報をセット. 顧客情報が不適切な場合は顧客情報を無効(名前を空文字列)にして false を返す
 bool set_client(Client *client, char name[], int age, char gender[]);
-// 顧客情報の出力
-void show_client(Client *client);
+// ファイルストリームへの顧客情報の出力
+void show_client(FILE *ofs, Client client);
 // ファイルストリームからの顧客情報の読込み
 bool read_client_from_txt(FILE *ifs, Client *client);
 // CSVファイルストリームからの顧客情報の読込み
@@ -68,7 +68,8 @@ int main(void)
     // 名前が空だった場合はループを脱出
     if ( client[ID].name[0] == '\0' ) break;
     // 顧客情報を表示
-    show_client( &client[ID] );
+    show_client( stdout, client[ID] );
+    printf("\n");
   }
 
   return 0;
@@ -159,13 +160,9 @@ bool read_client_from_txt(FILE *ifs, Client *client)
 // ----------------------------------------
 // 標準出力に顧客情報を出力
 // ----------------------------------------
-void show_client(Client *client)
+void show_client(FILE *ofs, Client client)
 {
-  printf("| %-10s | %3d | %-6s |\n",
-	 client->name, client->age,
-	 ( client->is_male ) ? "male" : "female");
-  // Client 型構造体は * を使ったポインタ渡しにしている.
-  // client->name, client->age とするとポインタ client が示す構造体 *client のメンバに
-  // アクセスできる. これらは client が指す実体 *client を使った
-  // (*client).name, (*client).age などの表現と等価.
+  printf("| %-10s | %3d | %-6s |",
+	 client.name, client.age,
+	 ( client.is_male ) ? "male" : "female");
 }

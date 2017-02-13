@@ -2,8 +2,8 @@
 #include <sstream>
 #include <fstream>
 
-#include "../../lib/client_class.hpp"
-#include "../../lib/client_class.hpp"
+#include "../client/client_class.hpp"
+#include "../client/client_class.hpp"
 
 const int CUSTOMER_SIZE = 10;	// 確保しておく顧客データのサイズ
 const int BUFFER_SIZE = 100;	// ファイル読み込み時のバッファサイズ

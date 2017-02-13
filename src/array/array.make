@@ -1,7 +1,3 @@
-CC = gcc
-LIB_DIR = ../../lib
-CFLAGS = -std=c11
-
 all:
 	gcc naive_array.c && ./a.out
 	g++ naive_array.cpp && ./a.out

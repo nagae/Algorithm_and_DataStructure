@@ -80,11 +80,7 @@ int main(void)
 // ----------------------------------------
 ostream& operator<<(ostream& os, const Client& client) // os, c ともに参照渡し
 {
-  os << "| "
-     << setw(10) << left << client.name << " | "
-     << setw(3) << right << dec << client.age << " | "
-     << setw(6) << left << ( ( client.is_male) ? "male" : "female" ) << " |";
-  return os;
+  return show_client(os, client);
 }
 
 
@@ -153,7 +149,6 @@ ostream& show_client(ostream& os, const Client& client)
   os << "| "
      << setw(10) << left << client.name << " | "
      << setw(3) << right << dec << client.age << " | "
-     << setw(6) << left << ( (client.is_male) ? "male" : "female" ) << " |"
-     << endl;
+     << setw(6) << left << ( (client.is_male) ? "male" : "female" ) << " |";
   return os;
 }

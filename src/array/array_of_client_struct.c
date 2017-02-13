@@ -1,5 +1,5 @@
-#include "../../lib/client_struct.h"
-#include "../../lib/client_struct.h"
+#include "../client/client_struct.h"
+#include "../client/client_struct.h"
 #define CUSTOMER_SIZE 10	// 顧客数の最大値
 
 // ----------------------------------------

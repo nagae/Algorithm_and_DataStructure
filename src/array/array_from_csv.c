@@ -11,8 +11,8 @@
 // ----------------------------------------
 // 関数ヘッダ
 // ----------------------------------------
-// 顧客情報の出力
-void show_client(char name[], int age, bool is_male);
+// ファイルストリームへの顧客情報の出力
+void show_client(FILE *ofs, char name[], int age, bool is_male);
 // ファイルストリームからの顧客情報の読込み
 bool read_client_from_txt(FILE *ifs, char name[], int *age, bool *is_male);
 // CSVファイルストリームからの顧客情報の読込み
@@ -57,7 +57,8 @@ int main(void)
     // 名前が空だった場合はループを脱出
     if ( name[ID][0] == '\0' ) break;
     // 顧客情報を表示
-    show_client( name[ID], age[ID], is_male[ID] );
+    show_client( stdout, name[ID], age[ID], is_male[ID] );
+    printf("\n");
   }
 
   return 0;
@@ -127,11 +128,11 @@ bool read_client_from_txt(FILE *ifs, char name[], int *age, bool *is_male)
 }
 
 // ----------------------------------------
-// 標準出力に顧客情報を出力
+// ファイルストリームに顧客情報を出力
 // ----------------------------------------
-void show_client(char name[], int age, bool is_male)
+void show_client(FILE *ofs, char name[], int age, bool is_male)
 {
-  printf("| %-10s | %3d | %-6s |\n",
-	 name, age,
-	 (is_male) ? "male" : "female");
+  fprintf(ofs, "| %-10s | %3d | %-6s |",
+	  name, age,
+	  (is_male) ? "male" : "female");
 }
